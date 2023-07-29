@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEMPRATURE CONVERTER</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+           
+  background: linear-gradient(135deg, #e8254f, #e9b816);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: white;
+  
+}
+        
+
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        input {
+            width: 150px;
+            padding: 10px;
+            margin-left: 5px;
+        }
+         
+        button {
+  /* Set button size and padding */
+  width: 100px;
+  height: 40px;
+  padding: 10px;
+  margin: 10px;
+
+  /* Apply gradient background */
+  background: linear-gradient(to right, #007bff, #00bfff);
+
+  /* Style the text */
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+
+  /* Add some styling for better visual */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  /* Slightly darken the gradient on hover */
+  background: linear-gradient(to right, #0056b3, #0095cc);
+}
+.btn{
+    width: 200px;
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>Temperature Converter</h1>
+     
+    <button  class="btn" onclick="connectToMetaMask()">Connect to MetaMask</button>
+    <p id="accountAddress"></p>
+    <br>
+    <div class="container">
+        <h6>Convert Celcius to Fahrenheit</h6>
+        <label for="Cel1"></label>
+        <input type="number" id="Cel1" placeholder="enter temp in celcius">
+        <button onclick="celsiusToFahrenheit()">Convert</button>
+        <p id="R1"></p>
+        
+    </div>
+    <div class="container">
+        <h6>Convert Celcius to Kelivn</h6>
+        <label for="kel1"></label>
+        <input type="number" id="kel1" placeholder="enter temp in kelvin">
+        <button onclick="celsiusToKelvin()">Convert</button>
+        <p id="R3"></p>
+    </div>
+    <div class="container">
+        <h6>Convert Fahrenheit To Kelvin</h6>
+        <label for="fah1"></label>
+        <input type="number" id="fah1" placeholder="enter temp in Fahrenheit">
+        <button onclick="fahrenheitToKelvin()">Convert</button>
+        <p id="R2"></p>
+
+
+    </div>
+    <script>
+        const address="0x5FbDB2315678afecb367f032d93F642f64180aa3"
+        const contabi = [
+	{
+		"inputs": [
+			{
+				"internalType": "int256",
+				"name": "celsius",
+				"type": "int256"
+			}
+		],
+		"name": "celsiusToFahrenheit",
+		"outputs": [
+			{
+				"internalType": "int256",
+				"name": "",
+				"type": "int256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "int256",
+				"name": "celsius",
+				"type": "int256"
+			}
+		],
+		"name": "celsiusToKelvin",
+		"outputs": [
+			{
+				"internalType": "int256",
+				"name": "",
+				"type": "int256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "int256",
+				"name": "fahrenheit",
+				"type": "int256"
+			}
+		],
+		"name": "fahrenheitToKelvin",
+		"outputs": [
+			{
+				"internalType": "int256",
+				"name": "",
+				"type": "int256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	}
+]
+				
+			let web3;
+            let contract;
+        // Check if MetaMask is installed
+        if (typeof window.ethereum !== 'undefined') {
+            web3 = new Web3(window.ethereum);
+            contract = new web3.eth.Contract(contractABI, contractAddress);
+        } else {
+            console.log("Please install MetaMask");
+        }
+        async function connectToMetaMask() {
+            try {
+                // Request access to user accounts
+                await window.ethereum.enable();
+
+                // Get the current account address
+                const accounts = await web3.eth.getAccounts();
+                const account = accounts[0];
+
+                // Display the account address
+                document.getElementById("accountAddress").textContent = "Connected Account: " + account;
+
+                // Set the default account for transactions
+                web3.eth.defaultAccount = account;
+
+                console.log("Connected to MetaMask:", account);
+            } catch (error) {
+                console.error("Failed:", error);
+            }
+        }
+        JavaScript functions for temperature conversion
+      
+       async function celsiusToFahrenheit(){
+          const cel=document.getElementById("Cel1").value;
+          try {
+                const result = await contract.methods.celsiusToFahrenheit(cel).call();
+                console.log(result);
+            } catch (error) {
+                console.error(error);
+            }
+
+        }
+        async function celsiusToKelvin(){
+          const kel=document.getElementById("kel1").value;
+          try {
+                const result1 = await contract.methods.celsiusToKelvin(kel);
+                document.getElementById("R2").textContent = `Result: ${result1}`;
+            } catch (error) {
+                console.error(error);
+            }
+
+        }
+        async function fahrenheitToKelvin(){
+          const fah=document.getElementById("fah1").value;
+          try {
+                const result2 = await contract.methods.fahrenheitToKelvin(fah).call();
+                document.getElementById("R3").textContent = `Result: ${result2}`;
+            } catch (error) {
+                console.error(error);
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
